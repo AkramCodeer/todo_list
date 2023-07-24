@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo List</title>
+    <!-- Add Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <style>
+      /* Add margin in the y direction */
+      .my-2 {
+        margin-top: 8px;
+        margin-bottom: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header section -->
+      <header class="text-center">
+        <h1>Todo</h1>
+        <h3 id="currentDate"></h3>
+      </header>
+
+      <!-- Main section -->
+      <main>
+        <!-- Form to add new todos -->
+        <form
+          id="todoForm"
+          class="input-group my-2 d-flex justify-content-center"
+        >
+          <input
+            type="text"
+            id="todoInput"
+            class="form-control"
+            placeholder="Add new Todo"
+            aria-label="Add new Todo"
+          />
+          <div class="input-group-append">
+            <button type="button" id="addTodoBtn" class="btn btn-primary">
+              +
+            </button>
+          </div>
+        </form>
+
+        <!-- Clear All button -->
+        <button
+          type="button"
+          id="clearAllBtn"
+          class="btn btn-danger float-right my-2"
+        >
+          Clear All
+        </button>
+
+        <!-- Todo List -->
+        <ul id="todoList" class="list-group">
+          <!-- List items will be added dynamically -->
+        </ul>
+      </main>
+    </div>
+
+    <!-- Add Bootstrap JS and custom script -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Set current date in the header
+        const currentDateElement = document.getElementById("currentDate");
+        const currentDate = new Date().toLocaleDateString("en-us", {
+          weekday: "long",
+          year: "numeric",
+          month: "short",
+          day: "numeric"
+        });
+        currentDateElement.textContent = currentDate;
+
+        // Todo list items counter (for assigning unique IDs)
+        let todoCounter = 0;
+
+        // Function to add a new Todo
+        function addTodo() {
+          const todoInput = document.getElementById("todoInput");
+          const todoValue = todoInput.value.trim();
+          if (todoValue === "") return;
+
+          // Create list item and checkbox
+          const todoList = document.getElementById("todoList");
+          const li = document.createElement("li");
+          li.className = "list-group-item";
+          li.innerHTML = `
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="todo${todoCounter}">
+            <label class="form-check-label" for="todo${todoCounter}">${todoValue}</label>
+          </div>
+        `;
+          todoList.appendChild(li);
+
+          // Clear input and focus back on it
+          todoInput.value = "";
+          todoInput.focus();
+
+          // Increment todoCounter for next Todo
+          todoCounter++;
+        }
+
+        // Function to delete all Todos
+        function clearAllTodos() {
+          const todoList = document.getElementById("todoList");
+          todoList.innerHTML = ""; // Clear all list items
+        }
+
+        // Event listener for the Add Todo button
+        const addTodoBtn = document.getElementById("addTodoBtn");
+        addTodoBtn.addEventListener("click", addTodo);
+
+        // Event listener for the Enter key press on the Todo input
+        const todoInput = document.getElementById("todoInput");
+        todoInput.addEventListener("keypress", function (event) {
+          if (event.key === "Enter") {
+            event.preventDefault(); // Prevent form submission
+            addTodo();
+          }
+        });
+
+        // Event listener for the Clear All button
+        const clearAllBtn = document.getElementById("clearAllBtn");
+        clearAllBtn.addEventListener("click", clearAllTodos);
+
+        // Event listener for marking Todos as done (checkbox click)
+        const todoList = document.getElementById("todoList");
+        todoList.addEventListener("click", function (event) {
+          if (event.target.type === "checkbox") {
+            const label = event.target.nextElementSibling;
+            if (event.target.checked) {
+              label.style.textDecoration = "line-through";
+            } else {
+              label.style.textDecoration = "none";
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
